@@ -10,7 +10,7 @@ function App() {
 
   const fetchGrid = async () => {
     try {
-      const res = await axios.get('https://my-touhou-backend.onrender.com/api/grid');
+      const res = await axios.get('https://youmugroupdraw.onrender.com/api/grid');
       setGrid(res.data.grid);
       setTheme(res.data.title);
     } catch (err) {
@@ -31,7 +31,7 @@ function App() {
     formData.append('image', file);
 
     try {
-      await axios.post('https://my-touhou-backend.onrender.com/api/upload', formData, {
+      await axios.post('https://youmugroupdraw.onrender.com/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert('投稿成功！');
