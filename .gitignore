@@ -1,0 +1,10 @@
+# 忽略巨大的依賴包
+node_modules/
+*/node_modules/
+
+# 忽略環境變數 (保護密碼)
+.env
+
+# 忽略系統產生的垃圾檔
+.DS_Store
+Thumbs.db
