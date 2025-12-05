@@ -18,11 +18,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 2. 資料庫連線
 const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
+  // 優先讀取 Render 環境變數裡的 DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // 這是關鍵！Neon 和許多雲端資料庫需要這個設定才能連線
+  }
 });
 
 const cloudinary = require('cloudinary').v2;
