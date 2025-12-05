@@ -4,7 +4,7 @@ import './App.css';
 
 function App() {
   const [grid, setGrid] = useState(Array(9).fill(null));
-  const [theme, setTheme] = useState({ main_title: '有木群群繪', sub_title: '有木群群繪' });
+  const [theme, setTheme] = useState({ main_title: 'Loading...', sub_title: '' });
   const [name, setName] = useState('');
   const [file, setFile] = useState(null);
 
