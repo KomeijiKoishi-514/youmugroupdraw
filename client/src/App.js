@@ -4,7 +4,7 @@ import './App.css';
 
 function App() {
   const [grid, setGrid] = useState(Array(9).fill(null));
-  const [theme, setTheme] = useState({ main_title: 'Loading...', sub_title: '有木群群繪' });
+  const [theme, setTheme] = useState({ main_theme: 'Loading...', sub_title: '有木群群繪' });
   const [name, setName] = useState('');
   const [file, setFile] = useState(null);
 
@@ -50,7 +50,7 @@ function App() {
       <header>
         <div className="title-group">
           <span className="tag">主題 Theme</span>
-          <h1 className="main-title">{theme.main_title}</h1>
+          <h1 className="main-title">{theme.main_theme}</h1>
         </div>
         <div className="title-group" style={{alignItems: 'flex-end'}}>
            <h2 className="sub-title">{theme.sub_title}</h2>
