@@ -21,8 +21,8 @@ body {
 }
 
 .App {
-  width: 100%;
-  max-width: 700px;
+  width: 95%; /* 讓它在小螢幕也能縮放 */
+  max-width: 1330px; /* ★ 修改這裡：配合你要的 1330 寬度 */
   background: transparent;
 }
 
@@ -89,20 +89,24 @@ header::after {
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 10px; /* 間距稍微加大一點點看起來比較舒服 */
   background: var(--ink-color);
   border: 5px solid var(--ink-color);
-  box-shadow: 10px 10px 0px rgba(0,0,0,0.2); /* 漫畫風硬陰影 */
+  box-shadow: 15px 15px 0px rgba(0,0,0,0.2);
+  
+  /* ★ 新增：強迫整個九宮格的長寬比符合 1330 : 1490 */
+  aspect-ratio: 1330 / 1490;
 }
 
 .grid-item {
   background: white;
-  aspect-ratio: 1 / 1.1;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   transition: transform 0.2s;
+  /* 移除原本的 aspect-ratio，因為我們已經定死了外框比例，格子會自動填滿 */
+  height: 100%; 
 }
 
 .grid-item:hover {
@@ -125,8 +129,9 @@ header::after {
 .img-box img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: filter 0.3s;
+  object-fit: cover; /* 確保填滿 */
+  image-rendering: -webkit-optimize-contrast; /* Chrome 優化 */
+  image-rendering: high-quality; /* 現代瀏覽器標準 */
 }
 
 /* 讓圖片有點復古黑白漫畫感，滑鼠移過去變彩色 */
