@@ -7,6 +7,7 @@ function App() {
   const [theme, setTheme] = useState({ main_theme: 'Loading...', sub_title: '有木群群繪' });
   const [name, setName] = useState('');
   const [file, setFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fetchGrid = async () => {
     try {
@@ -22,9 +23,15 @@ function App() {
     fetchGrid();
   }, []);
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file || !name) return alert('請填寫名字並選擇圖片');
+    
+    // 如果正在上傳，就直接擋掉，不執行後續動作
+    if (isSubmitting) return;
+
+    // 開始上傳，鎖住按鈕
+    setIsSubmitting(true);
 
     const formData = new FormData();
     formData.append('artist_name', name);
@@ -37,11 +44,13 @@ function App() {
       alert('投稿成功！');
       setName('');
       setFile(null);
-      // 清空 file input 的小技巧
       document.getElementById('fileInput').value = ""; 
       fetchGrid();
     } catch (err) {
       alert(err.response?.data?.error || '上傳失敗');
+    } finally {
+      // 解鎖按鈕
+      setIsSubmitting(false);
     }
   };
 
@@ -76,7 +85,7 @@ function App() {
         ))}
       </div>
 
-      <div className="upload-zone">
+<div className="upload-zone">
         <h3>✦ 繪圖投稿箱 ✦</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-row">
@@ -84,7 +93,8 @@ function App() {
               type="text" 
               placeholder="你的名字 / Artist Name" 
               value={name} 
-              onChange={e => setName(e.target.value)} 
+              onChange={e => setName(e.target.value)}
+              disabled={isSubmitting} 
             />
           </div>
           <div className="form-row">
@@ -92,9 +102,22 @@ function App() {
               id="fileInput"
               type="file" 
               accept="image/*"
-              onChange={e => setFile(e.target.files[0])} 
+              onChange={e => setFile(e.target.files[0])}
+              // 上傳時鎖住檔案選擇
+              disabled={isSubmitting} 
             />
-            <button type="submit">送出</button>
+            
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              style={{ 
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                opacity: isSubmitting ? 0.6 : 1 
+              }}
+            >
+              {isSubmitting ? '上傳中...' : '送出'}
+            </button>
+
           </div>
         </form>
       </div>
