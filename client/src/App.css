@@ -1,16 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap');
 
 :root {
-  --bg-color: #f7f5f0; /* 米白紙張色 */
-  --ink-color: #1a1a1a; /* 接近黑色的深灰 */
-  --accent-color: #d32f2f; /* 朱印紅 */
-  --border-width: 3px;
+  --bg-color: #f7f5f0;
+  --ink-color: #1a1a1a;
+  --accent-color: #d32f2f;
 }
 
 body {
   background-color: var(--bg-color);
   background-image: radial-gradient(#e0e0e0 1px, transparent 1px);
-  background-size: 20px 20px; /* 點狀網點背景 */
+  background-size: 20px 20px;
   font-family: 'Noto Serif TC', serif;
   color: var(--ink-color);
   margin: 0;
@@ -21,47 +20,47 @@ body {
 }
 
 .App {
-  width: 95%; /* 讓它在小螢幕也能縮放 */
-  max-width: 1330px; /* 配合你要的 1330 寬度 */
+  width: 95%;
+  max-width: 1330px;
   background: transparent;
 }
 
-/* --- 九宮格區 (含標題卡) --- */
+/* --- 九宮格容器 --- */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3欄佈局 */
-  grid-template-rows: repeat(3, 1fr);    /* 3列佈局 */
+  /* 定義 3x3 的網格 */
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   gap: 10px;
   background: var(--ink-color);
   border: 5px solid var(--ink-color);
   box-shadow: 15px 15px 0px rgba(0,0,0,0.2);
-  
-  /* 強迫整體長寬比符合 1330 : 1490 */
+  /* 強迫長寬比 */
   aspect-ratio: 1330 / 1490;
 }
 
-/* 一般圖片格 */
+/* --- 一般格子 --- */
 .grid-item {
   background: white;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s;
   height: 100%; 
 }
 
-/* ★ 新增：標題卡專用樣式 (佔據左上兩格) */
+/* --- ★ 關鍵修正：標題卡樣式 --- */
 .title-card {
-  grid-column: span 2; /* 橫跨兩欄 */
-  background-color: #fcfcfc; /* 稍微不同的底色 */
-  padding: 15px; /* 內距 */
+  /* 讓這個格子橫跨左邊兩欄 */
+  grid-column: span 2;
+  background-color: #fcfcfc;
+  padding: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 標題卡內部的裝飾框與排版 */
+/* 標題卡內容框 */
 .title-content {
   display: flex;
   flex-direction: column;
@@ -69,12 +68,11 @@ body {
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: 4px double var(--ink-color); /* 雙線邊框更有質感 */
+  border: 4px double var(--ink-color); /* 雙線框裝飾 */
   padding: 10px;
-  box-sizing: border-box; /* 確保 padding 不會撐破寬度 */
+  box-sizing: border-box;
 }
 
-/* 標題卡內的文字樣式 */
 .title-card .tag {
   background-color: var(--ink-color);
   color: white;
@@ -86,13 +84,12 @@ body {
 }
 
 .title-card .main-title {
-  font-size: 3.2rem; /* 字體加大 */
+  font-size: 3.2rem;
   font-weight: 900;
   line-height: 1.1;
   margin: 0;
   text-align: center;
   letter-spacing: 2px;
-  text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
 }
 
 .title-card .sub-title {
@@ -105,11 +102,9 @@ body {
   transform: rotate(-2deg);
 }
 
-/* --- 圖片顯示設定 --- */
+/* --- 圖片與其他樣式 --- */
 .grid-item:hover {
-  transform: scale(1.02);
   z-index: 10;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3);
 }
 
 .img-box {
@@ -127,14 +122,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* 畫質優化：移除 contrast 濾鏡以避免鋸齒 */
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
-}
-
-/* 移除濾鏡，保持原圖色彩，避免畫質破壞 */
-.img-box img {
-  filter: none; 
 }
 
 .placeholder {
@@ -158,7 +147,7 @@ body {
   font-size: 1.1rem;
 }
 
-/* --- 上傳區 --- */
+/* --- 上傳區與按鈕 --- */
 .upload-zone {
   margin-top: 40px;
   padding: 25px;
@@ -167,53 +156,9 @@ body {
   text-align: center;
 }
 
-.upload-zone h3 {
-  margin-top: 0;
-  font-size: 1.5rem;
-}
-
-.form-row {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 15px;
-  flex-wrap: wrap; /* 手機版自動換行 */
-}
-
-input[type="text"] {
-  border: 2px solid var(--ink-color);
-  padding: 10px;
-  font-family: inherit;
-  font-size: 1rem;
-  background: white;
-  outline: none;
-}
-
-/* 美化檔案上傳按鈕 */
-input[type="file"]::file-selector-button {
-  border: 2px solid var(--ink-color);
-  padding: 8px 12px;
-  background: white;
-  font-weight: bold;
-  cursor: pointer;
-  margin-right: 10px;
-  font-family: inherit;
-}
-
-button {
-  background-color: var(--ink-color);
-  color: white;
-  border: none;
-  padding: 10px 25px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  font-family: inherit;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:hover {
-  background-color: var(--accent-color);
-  transform: translateY(-2px);
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.2);
-}
+.upload-zone h3 { margin-top: 0; font-size: 1.5rem; }
+.form-row { display: flex; gap: 10px; justify-content: center; margin-top: 15px; flex-wrap: wrap; }
+input[type="text"] { border: 2px solid var(--ink-color); padding: 10px; font-size: 1rem; outline: none; }
+input[type="file"]::file-selector-button { border: 2px solid var(--ink-color); padding: 8px 12px; background: white; font-weight: bold; cursor: pointer; margin-right: 10px; }
+button { background-color: var(--ink-color); color: white; border: none; padding: 10px 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
+button:hover { background-color: var(--accent-color); transform: translateY(-2px); box-shadow: 3px 3px 0px rgba(0,0,0,0.2); }
