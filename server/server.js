@@ -13,9 +13,9 @@ const PORT = process.env.PORT || 5000;
 
 // 1. 設定 Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET
+  cloud_name: 'dyw3omoot',
+  api_key: '712259893879145',
+  api_secret: '1_dSwARnjmS7VQH3msj5dRRkpGg'
 });
 
 // 2. 設定 Multer 儲存引擎 (存到 Cloudinary)
