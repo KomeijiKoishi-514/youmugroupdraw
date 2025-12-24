@@ -132,7 +132,7 @@ function App() {
       </div>
 
       <div className="upload-zone">
-        <h3>✦ Lunatic Kingdom Data Uplink ✦</h3>
+        <h3>✦ Data Uploading... ✦</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <input 
