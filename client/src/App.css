@@ -1,18 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap'); /* 加一個科幻字體 */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
 :root {
-  --bg-color: #05060a;       /* 深邃宇宙黑 */
-  --card-bg: #0a0b1e;        /* 月之都深藍 */
-  --neon-blue: #00f3ff;      /* 靈夢/早苗的高亮色 */
-  --neon-purple: #b026ff;    /* 鈴仙的紫色 */
-  --text-main: #ffffff;      /* 純白 */
-  --grid-border: 2px solid rgba(0, 243, 255, 0.5);
+  --bg-color: #05060a;
+  --card-bg: #0a0b1e;
+  --neon-blue: #00f3ff;
+  --neon-purple: #b026ff;
+  --text-main: #ffffff;
 }
 
 body {
   background-color: var(--bg-color);
-  /* 模擬星空背景 */
   background-image: 
     radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
     radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
@@ -20,7 +18,7 @@ body {
   background-size: 550px 550px, 350px 350px, 250px 250px;
   background-position: 0 0, 40px 60px, 130px 270px;
   
-  font-family: 'Noto Serif TC', serif; /* 紺珠傳依然適合明體 */
+  font-family: 'Noto Serif TC', serif;
   color: var(--text-main);
   margin: 0;
   padding: 40px 20px;
@@ -35,21 +33,19 @@ body {
   background: transparent;
 }
 
-/* --- 九宮格容器 (核心修復) --- */
+/* --- 九宮格容器 --- */
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   gap: 8px;
   
-  /* 外框改為發光樣式 */
   background: rgba(0, 10, 30, 0.8);
   border: 3px solid var(--neon-blue);
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
   
-  /* 鎖定比例 */
   aspect-ratio: 1330 / 1490;
-  padding: 8px; /* 內縮一點，讓格子跟外框有距離 */
+  padding: 8px;
 }
 
 /* --- 格子通用設定 --- */
@@ -60,14 +56,17 @@ body {
   position: relative;
   overflow: hidden;
   height: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.1); /* 微弱的邊框 */
+  border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
 }
 
-.grid-item:hover {
+/* ★ 修改重點 1：這裡加上 :not(.title-card) */
+/* 只有「不是標題卡」的格子，滑鼠移上去才會有反應 */
+.grid-item:not(.title-card):hover {
   border-color: var(--neon-blue);
   box-shadow: 0 0 15px var(--neon-blue);
   z-index: 10;
+  transform: scale(1.02); /* 稍微放大一點點更有科技感 */
 }
 
 /* --- 標題卡 (左上角 2 格) --- */
@@ -77,60 +76,74 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 15px; /* 稍微減少 padding */
+  
+  /* 確保標題卡不會被滑鼠干擾 */
+  pointer-events: none; 
+  user-select: none;
 }
 
 .title-content {
   width: 100%;
   height: 100%;
-  border: 1px solid var(--neon-blue); /* 科技感細框 */
+  border: 1px solid var(--neon-blue);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
   background: rgba(0, 243, 255, 0.02);
+  
+  /* 防止內部內容撐開 */
+  overflow: hidden; 
 }
 
-/* 裝飾線 */
 .decoration-line {
   position: absolute;
   width: 50%;
   height: 2px;
   background: var(--neon-blue);
+  box-shadow: 0 0 5px var(--neon-blue);
 }
-.decoration-line.top { top: 10px; }
-.decoration-line.bottom { bottom: 10px; }
+.decoration-line.top { top: 15px; }
+.decoration-line.bottom { bottom: 15px; }
 
 .title-card .tag {
-  font-family: 'Orbitron', sans-serif; /* 科幻字體 */
+  font-family: 'Orbitron', sans-serif;
   color: var(--neon-blue);
-  font-size: 0.9rem;
+  font-size: 0.8rem; /* 稍微縮小 */
   letter-spacing: 3px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   text-shadow: 0 0 5px var(--neon-blue);
 }
 
+/* ★ 修改重點 2：調整標題字體大小與行高 */
 .title-card .main-title {
-  font-size: 3.5rem;
+  /* 從 3.5rem 改為 2.8rem，確保五個字能塞進去 */
+  font-size: 2.8rem; 
   font-weight: 900;
   margin: 0;
   text-align: center;
   color: white;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   font-family: 'Noto Serif TC', serif;
+  
+  /* 確保文字不換行 */
+  white-space: nowrap;
+  line-height: 1.2;
+  padding: 0 10px; /* 防止左右貼太死 */
 }
 
 .title-card .sub-title {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--neon-purple);
-  margin-top: 10px;
-  letter-spacing: 5px;
+  margin-top: 5px;
+  letter-spacing: 3px; /* 字距稍微縮小一點 */
   font-weight: 400;
   text-transform: uppercase;
 }
 
-/* --- 圖片與空狀態 --- */
+/* --- 以下樣式保持不變 --- */
 .img-box {
   flex: 1;
   width: 100%;
@@ -149,7 +162,6 @@ body {
   image-rendering: high-quality;
 }
 
-/* 空狀態樣式 - 全息投影感 */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -171,7 +183,6 @@ body {
   margin-top: 5px;
 }
 
-/* 名字標籤 - HUD 風格 */
 .name-box {
   position: absolute;
   bottom: 0;
@@ -198,7 +209,6 @@ body {
   font-family: 'Orbitron', sans-serif;
 }
 
-/* --- 上傳區 (控制台風格) --- */
 .upload-zone {
   margin-top: 40px;
   padding: 30px;
@@ -226,7 +236,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* 輸入框樣式 */
 input[type="text"] {
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid var(--neon-blue);
@@ -244,7 +253,6 @@ input[type="text"]:focus {
   box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
 }
 
-/* 檔案選擇按鈕 */
 input[type="file"] {
   color: white;
 }
@@ -262,7 +270,6 @@ input[type="file"]::file-selector-button:hover {
   color: black;
 }
 
-/* 按鈕樣式 */
 button {
   background: var(--neon-blue);
   color: black;
@@ -289,7 +296,6 @@ button:disabled {
   box-shadow: none;
 }
 
-/* 下載按鈕特別樣式 */
 .download-btn {
   background: transparent;
   border: 2px solid var(--neon-purple);
