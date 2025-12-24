@@ -21,90 +21,91 @@ body {
 }
 
 .App {
-  width: 100%;
-  max-width: 700px;
+  width: 95%; /* 讓它在小螢幕也能縮放 */
+  max-width: 1330px; /* 配合你要的 1330 寬度 */
   background: transparent;
 }
 
-/* --- 標題區 --- */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 5px solid var(--ink-color);
-  padding-bottom: 15px;
-  margin-bottom: 30px;
-  position: relative;
-}
-
-/* 加上一個漫畫風的裝飾線 */
-header::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--ink-color);
-}
-
-.title-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.tag {
-  background-color: var(--ink-color);
-  color: white;
-  padding: 2px 8px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  display: inline-block;
-  margin-bottom: 5px;
-  transform: skew(-10deg); /* 稍微傾斜更有動感 */
-  width: fit-content;
-}
-
-.main-title {
-  font-size: 2.5rem;
-  font-weight: 900;
-  line-height: 1.2;
-  margin: 0;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-}
-
-.sub-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  text-align: right;
-  color: var(--accent-color);
-  border: 2px solid var(--accent-color);
-  padding: 5px 10px;
-  border-radius: 4px;
-  transform: rotate(-2deg); /* 蓋章的感覺 */
-}
-
-/* --- 九宮格區 --- */
+/* --- 九宮格區 (含標題卡) --- */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, 1fr); /* 3欄佈局 */
+  grid-template-rows: repeat(3, 1fr);    /* 3列佈局 */
+  gap: 10px;
   background: var(--ink-color);
   border: 5px solid var(--ink-color);
-  box-shadow: 10px 10px 0px rgba(0,0,0,0.2); /* 漫畫風硬陰影 */
+  box-shadow: 15px 15px 0px rgba(0,0,0,0.2);
+  
+  /* 強迫整體長寬比符合 1330 : 1490 */
+  aspect-ratio: 1330 / 1490;
 }
 
+/* 一般圖片格 */
 .grid-item {
   background: white;
-  aspect-ratio: 1 / 1.1;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   transition: transform 0.2s;
+  height: 100%; 
 }
 
+/* ★ 新增：標題卡專用樣式 (佔據左上兩格) */
+.title-card {
+  grid-column: span 2; /* 橫跨兩欄 */
+  background-color: #fcfcfc; /* 稍微不同的底色 */
+  padding: 15px; /* 內距 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 標題卡內部的裝飾框與排版 */
+.title-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 4px double var(--ink-color); /* 雙線邊框更有質感 */
+  padding: 10px;
+  box-sizing: border-box; /* 確保 padding 不會撐破寬度 */
+}
+
+/* 標題卡內的文字樣式 */
+.title-card .tag {
+  background-color: var(--ink-color);
+  color: white;
+  padding: 5px 15px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  transform: skew(-10deg);
+  margin-bottom: 15px;
+}
+
+.title-card .main-title {
+  font-size: 3.2rem; /* 字體加大 */
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 0;
+  text-align: center;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+.title-card .sub-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent-color);
+  margin-top: 15px;
+  border-top: 2px solid var(--accent-color);
+  padding-top: 5px;
+  transform: rotate(-2deg);
+}
+
+/* --- 圖片顯示設定 --- */
 .grid-item:hover {
   transform: scale(1.02);
   z-index: 10;
@@ -126,22 +127,21 @@ header::after {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: filter 0.3s;
+  /* 畫質優化：移除 contrast 濾鏡以避免鋸齒 */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
-/* 讓圖片有點復古黑白漫畫感，滑鼠移過去變彩色 */
+/* 移除濾鏡，保持原圖色彩，避免畫質破壞 */
 .img-box img {
-  filter: grayscale(30%) contrast(1.1);
-}
-.grid-item:hover .img-box img {
-  filter: grayscale(0%) contrast(1);
+  filter: none; 
 }
 
 .placeholder {
   color: #ccc;
   font-weight: 900;
-  font-size: 1.5rem;
-  letter-spacing: 2px;
+  font-size: 2rem;
+  letter-spacing: 4px;
   transform: rotate(-5deg);
 }
 
@@ -152,10 +152,10 @@ header::after {
   width: 100%;
   background: rgba(255, 255, 255, 0.9);
   border-top: 2px solid var(--ink-color);
-  padding: 5px 0;
+  padding: 8px 0;
   text-align: center;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 /* --- 上傳區 --- */
@@ -177,6 +177,7 @@ header::after {
   gap: 10px;
   justify-content: center;
   margin-top: 15px;
+  flex-wrap: wrap; /* 手機版自動換行 */
 }
 
 input[type="text"] {
