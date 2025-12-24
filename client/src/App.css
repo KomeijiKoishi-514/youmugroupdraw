@@ -94,6 +94,7 @@ body {
   height: 100%;
   border: 2px solid var(--neon-blue); /* 邊框稍微加粗一點點更有氣勢 */
   display: flex;
+  box-sizing: border-box;
   flex-direction: column;
   align-items: center;
   justify-content: center;
