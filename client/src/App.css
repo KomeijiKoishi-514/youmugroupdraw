@@ -70,13 +70,19 @@ body {
 }
 
 /* --- 標題卡 (左上角 2 格) --- */
+/* --- 標題卡 (左上角 2 格) --- */
 .title-card {
   grid-column: span 2;
   background: linear-gradient(135deg, #0f1129 0%, #0a0b1e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 15px; /* 稍微減少 padding */
+  
+  /* ★ 關鍵修改 1：移除 padding，讓藍框撐滿整個格子，高度就會跟旁邊一樣了 */
+  padding: 0;
+  
+  /* ★ 關鍵修改 2：移除繼承自 grid-item 的邊框，避免雙重邊框 */
+  border: none; 
   
   /* 確保標題卡不會被滑鼠干擾 */
   pointer-events: none; 
@@ -86,7 +92,7 @@ body {
 .title-content {
   width: 100%;
   height: 100%;
-  border: 1px solid var(--neon-blue);
+  border: 2px solid var(--neon-blue); /* 邊框稍微加粗一點點更有氣勢 */
   display: flex;
   flex-direction: column;
   align-items: center;
