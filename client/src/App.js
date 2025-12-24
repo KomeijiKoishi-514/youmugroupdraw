@@ -5,10 +5,9 @@ import download from 'downloadjs';
 import './App.css';
 
 function App() {
-  // 設定為 7 格
   const [grid, setGrid] = useState(Array(7).fill(null));
-  // 注意：這裡的初始值 key 要跟資料庫欄位一致 (main_theme)
-  const [theme, setTheme] = useState({ main_theme: '讀取中...', sub_title: '' });
+  // 預設標題先寫死，防止載入時跳動
+  const [theme, setTheme] = useState({ main_theme: '讀取中...', sub_title: 'Loading...' });
   const [name, setName] = useState('');
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,9 +16,8 @@ function App() {
 
   const fetchGrid = async () => {
     try {
-      // 請記得將此處網址換成你 Render 的後端網址
+      // ★ 請確認這裡是你 Render 的網址
       const res = await axios.get('https://youmugroupdraw.onrender.com/api/grid');
-      // 確保只取前 7 筆資料
       const validGrid = res.data.grid.slice(0, 7);
       while (validGrid.length < 7) {
         validGrid.push(null);
@@ -28,7 +26,7 @@ function App() {
       setTheme(res.data.title);
     } catch (err) {
       console.error("Connection Error", err);
-      setTheme({ main_theme: '連線失敗', sub_title: '請檢查後端' });
+      setTheme({ main_theme: '連線中斷', sub_title: 'System Error' });
     }
   };
 
@@ -47,7 +45,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
-    if (!file || !name) return alert('請填寫名字並選擇圖片');
+    if (!file || !name) return alert('請輸入代號並上傳影像數據'); // 改個台詞
 
     setIsSubmitting(true);
     const formData = new FormData();
@@ -55,17 +53,16 @@ function App() {
     formData.append('image', file);
 
     try {
-      // 請記得將此處網址換成你 Render 的後端網址
       await axios.post('https://youmugroupdraw.onrender.com/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      alert('投稿成功！');
+      alert('傳送完畢。數據已寫入月之都資料庫。');
       setName('');
       setFile(null);
       document.getElementById('fileInput').value = ""; 
       fetchGrid();
     } catch (err) {
-      alert(err.response?.data?.error || '上傳失敗');
+      alert(err.response?.data?.error || '傳送失敗');
     } finally {
       setIsSubmitting(false);
     }
@@ -74,31 +71,40 @@ function App() {
   const handleDownload = async () => {
     if (gridRef.current === null) return;
     try {
-      const dataUrl = await toPng(gridRef.current, { cacheBust: true, pixelRatio: 3 });
-      download(dataUrl, 'touhou-group-draw.png');
+      // 背景色設為深色，避免透明圖下載變黑
+      const dataUrl = await toPng(gridRef.current, { 
+        cacheBust: true, 
+        pixelRatio: 3,
+        backgroundColor: '#0a0b1e' 
+      });
+      download(dataUrl, 'legacy_of_lunatic_kingdom.png');
     } catch (err) {
       console.error('下載失敗:', err);
-      alert('圖片生成失敗，請稍後再試');
+      alert('影像生成失敗');
     }
   };
 
   return (
     <div className="App">
       
-      {/* ★ 修正重點：原本外部的 header 已移除，直接開始 grid-container */}
+      {/* 修復關鍵：
+         所有的格子（包含標題卡）都在這個 grid-container 裡面。
+         CSS Grid 會自動處理它們的位置。
+      */}
       <div className="grid-container" ref={gridRef}>
         
-        {/* ★ 修正重點：手動插入「標題卡」，它現在是網格的第一個元素 */}
+        {/* Slot X: 標題卡 (佔 2 格) */}
         <div className="grid-item title-card">
           <div className="title-content">
-             <span className="tag">主題 Theme</span>
-             {/* 使用 main_theme 以符合資料庫欄位 */}
+             <div className="decoration-line top"></div>
+             <span className="tag">PROJECT THEME</span>
              <h1 className="main-title">{theme.main_theme}</h1>
              <h2 className="sub-title">{theme.sub_title}</h2>
+             <div className="decoration-line bottom"></div>
           </div>
         </div>
 
-        {/* 接下來才是 7 個圖片格子 */}
+        {/* Slot 0-6: 圖片格 */}
         {grid.map((slot, i) => (
           <div key={i} className="grid-item">
             <div className="img-box">
@@ -110,12 +116,15 @@ function App() {
                   crossOrigin="anonymous" 
                 />
               ) : (
-                <span className="placeholder">空白</span>
+                <div className="empty-state">
+                  <span className="empty-text">NO DATA</span>
+                  <span className="empty-sub">募集中</span>
+                </div>
               )}
             </div>
             {slot && (
               <div className="name-box">
-                {slot.artist_name}
+                <span className="artist-label">Artist:</span> {slot.artist_name}
               </div>
             )}
           </div>
@@ -123,12 +132,12 @@ function App() {
       </div>
 
       <div className="upload-zone">
-        <h3>✦ 繪圖投稿箱 ✦</h3>
+        <h3>✦ Lunatic Kingdom Data Uplink ✦</h3>
         <form onSubmit={handleSubmit}>
           <div className="form-row">
             <input 
               type="text" 
-              placeholder="你的名字 / Artist Name" 
+              placeholder="代號 / Name" 
               value={name} 
               onChange={e => setName(e.target.value)}
               disabled={isSubmitting} 
@@ -145,32 +154,20 @@ function App() {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              style={{ 
-                cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                opacity: isSubmitting ? 0.6 : 1 
-              }}
+              className={isSubmitting ? 'loading' : ''}
             >
-              {isSubmitting ? '上傳中...' : '送出'}
+              {isSubmitting ? 'TRANSMITTING...' : 'UPLOAD'}
             </button>
           </div>
         </form>
       </div>
 
-      <div style={{ textAlign: 'center', marginTop: '20px', paddingBottom: '40px' }}>
+      <div style={{ textAlign: 'center', marginTop: '30px', paddingBottom: '40px' }}>
         <button 
           onClick={handleDownload}
-          style={{ 
-            backgroundColor: '#2e7d32', 
-            color: 'white',
-            border: 'none',
-            fontSize: '1.2rem',
-            padding: '12px 30px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            boxShadow: '3px 3px 5px rgba(0,0,0,0.2)'
-          }}
+          className="download-btn"
         >
-          下載完整大圖 (Save Image)
+           SAVE IMAGE DATA
         </button>
       </div>
 
