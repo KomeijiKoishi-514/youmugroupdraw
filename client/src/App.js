@@ -1,30 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // ★ 1. 引入 useRef
 import axios from 'axios';
-import { toPng } from 'html-to-image';
-import download from 'downloadjs';
+import { toPng } from 'html-to-image'; // ★ 2. 引入截圖工具
+import download from 'downloadjs';     // ★ 3. 引入下載工具
 import './App.css';
 
 function App() {
-  // 設定為 7 格 (配合標題卡佔 2 格)
-  const [grid, setGrid] = useState(Array(7).fill(null));
+  const [grid, setGrid] = useState(Array(9).fill(null));
   const [theme, setTheme] = useState({ main_theme: 'Loading...', sub_title: 'Loading...' });
   const [name, setName] = useState('');
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 截圖用的參考點
+  // ★ 4. 建立一個 Ref 來綁定九宮格
   const gridRef = useRef(null);
 
   const fetchGrid = async () => {
     try {
       const res = await axios.get('https://youmugroupdraw.onrender.com/api/grid');
-      // 確保只取前 7 筆資料，避免舊資料干擾
-      const validGrid = res.data.grid.slice(0, 7);
-      // 如果資料庫不足 7 筆，補滿 null
-      while (validGrid.length < 7) {
-        validGrid.push(null);
-      }
-      setGrid(validGrid);
+      setGrid(res.data.grid);
       setTheme(res.data.title);
     } catch (err) {
       console.error("Connection Error", err);
@@ -35,7 +28,7 @@ function App() {
     fetchGrid();
   }, []);
 
-  // Cloudinary 圖片網址優化 (縮圖 + 自動品質)
+  // Cloudinary 網址優化函式
   const getOptimizedUrl = (url) => {
     if (!url) return '';
     if (url.includes('/upload/')) {
@@ -45,16 +38,14 @@ function App() {
   };
 
   const handleSubmit = async (e) => {
+    // ... (這部分保持原本的邏輯，不用變) ...
     e.preventDefault();
     if (isSubmitting) return;
     if (!file || !name) return alert('請填寫名字並選擇圖片');
-
     setIsSubmitting(true);
-
     const formData = new FormData();
     formData.append('artist_name', name);
     formData.append('image', file);
-
     try {
       await axios.post('https://youmugroupdraw.onrender.com/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
@@ -71,10 +62,15 @@ function App() {
     }
   };
 
+  // ★ 5. 新增：下載圖片的功能
   const handleDownload = async () => {
-    if (gridRef.current === null) return;
+    if (gridRef.current === null) {
+      return;
+    }
 
     try {
+      // 這裡設定 pixelRatio: 3 可以確保輸出的圖片解析度很高 (3倍清晰)
+      // cacheBust: true 可以強制瀏覽器不讀快取，避免圖片讀取失敗
       const dataUrl = await toPng(gridRef.current, { cacheBust: true, pixelRatio: 3 });
       download(dataUrl, 'touhou-group-draw.png');
     } catch (err) {
@@ -85,20 +81,18 @@ function App() {
 
   return (
     <div className="App">
-      
-      {/* 九宮格容器 (包含標題卡) */}
-      <div className="grid-container" ref={gridRef}>
-        
-        {/* 1. 標題卡 (手動插入，佔據 2 格) */}
-        <div className="grid-item title-card">
-          <div className="title-content">
-             <span className="tag">主題 Theme</span>
-             <h1 className="main-title">{theme.main_theme}</h1>
-             <h2 className="sub-title">{theme.sub_title}</h2>
-          </div>
+      <header>
+        <div className="title-group">
+          <span className="tag">主題 Theme</span>
+          <h1 className="main-title">{theme.main_theme}</h1>
         </div>
+        <div className="title-group" style={{alignItems: 'flex-end'}}>
+           <h2 className="sub-title">{theme.sub_title}</h2>
+        </div>
+      </header>
 
-        {/* 2. 剩下的 7 格圖片 */}
+      {/* ★ 6. 將 Ref 綁定到這個 div 上，程式就會截取這個範圍 */}
+      <div className="grid-container" ref={gridRef}>
         {grid.map((slot, i) => (
           <div key={i} className="grid-item">
             <div className="img-box">
@@ -107,6 +101,7 @@ function App() {
                   src={getOptimizedUrl(slot.image_path)} 
                   alt="art" 
                   loading="lazy"
+                  // ★ 7. 非常重要！加上這個屬性，允許跨域截圖，否則 Cloudinary 圖片會變成空白
                   crossOrigin="anonymous" 
                 />
               ) : (
@@ -122,10 +117,10 @@ function App() {
         ))}
       </div>
 
-      {/* 上傳區塊 */}
       <div className="upload-zone">
         <h3>✦ 繪圖投稿箱 ✦</h3>
         <form onSubmit={handleSubmit}>
+          {/* ... 輸入框部分保持不變 ... */}
           <div className="form-row">
             <input 
               type="text" 
@@ -146,10 +141,7 @@ function App() {
             <button 
               type="submit" 
               disabled={isSubmitting}
-              style={{ 
-                cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                opacity: isSubmitting ? 0.6 : 1 
-              }}
+              style={{ opacity: isSubmitting ? 0.6 : 1 }}
             >
               {isSubmitting ? '上傳中...' : '送出'}
             </button>
@@ -157,22 +149,17 @@ function App() {
         </form>
       </div>
 
-      {/* 下載按鈕 */}
+      {/* ★ 8. 新增一個下載按鈕在最下面 */}
       <div style={{ textAlign: 'center', marginTop: '20px', paddingBottom: '40px' }}>
         <button 
           onClick={handleDownload}
           style={{ 
-            backgroundColor: '#2e7d32', 
-            color: 'white',
-            border: 'none',
+            backgroundColor: '#2e7d32', // 綠色按鈕區別一下
             fontSize: '1.2rem',
-            padding: '12px 30px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            boxShadow: '3px 3px 5px rgba(0,0,0,0.2)'
+            padding: '12px 30px'
           }}
         >
-          📥 下載完整大圖 (Save Image)
+          下載完整大圖 (Save Image)
         </button>
       </div>
 
