@@ -21,36 +21,45 @@ body {
   font-family: 'Noto Serif TC', serif;
   color: var(--text-main);
   margin: 0;
-  padding: 40px 20px;
+  
+  /* ★ 修改這裡：移除原本的 40px 內距，改成 10px 稍微留點呼吸空間就好，或者設為 0 全滿 */
+  padding: 10px; 
+  
   display: flex;
   justify-content: center;
   min-height: 100vh;
+  box-sizing: border-box; /* 確保 padding 不會撐出捲軸 */
 }
 
 .App {
-  width: 98%;
-  max-width: 1800px;
+  /* ★ 修改這裡：寬度全開 */
+  width: 100%;
+  
+  /* ★ 修改這裡：移除最大寬度限制，讓它跟隨螢幕無限放大 */
+  max-width: none; 
+  
   background: transparent;
+  
+  /* 為了不讓標題真的貼到螢幕最邊邊，App 內部可以留一點點緩衝 */
+  box-sizing: border-box;
 }
 
-/* --- 九宮格容器 --- */
 /* --- 九宮格容器 --- */
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  
-  /* ★ 修改這裡：間距從 8px 縮小為 4px */
-  gap: 4px;
+  gap: 4px; /* 維持窄間距 */
   
   background: rgba(0, 10, 30, 0.8);
   border: 3px solid var(--neon-blue);
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
   
   aspect-ratio: 1330 / 1490;
-  
-  /* ★ 修改這裡：內距也從 8px 縮小為 4px，讓格子能再大一點點 */
   padding: 4px;
+  
+  /* ★ 新增：確保它水平置中 */
+  margin: 0 auto; 
 }
 
 /* --- 格子通用設定 --- */
