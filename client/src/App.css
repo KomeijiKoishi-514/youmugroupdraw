@@ -34,18 +34,23 @@ body {
 }
 
 /* --- 九宮格容器 --- */
+/* --- 九宮格容器 --- */
 .grid-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  gap: 8px;
+  
+  /* ★ 修改這裡：間距從 8px 縮小為 4px */
+  gap: 4px;
   
   background: rgba(0, 10, 30, 0.8);
   border: 3px solid var(--neon-blue);
   box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
   
   aspect-ratio: 1330 / 1490;
-  padding: 8px;
+  
+  /* ★ 修改這裡：內距也從 8px 縮小為 4px，讓格子能再大一點點 */
+  padding: 4px;
 }
 
 /* --- 格子通用設定 --- */
