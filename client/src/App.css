@@ -50,6 +50,8 @@ body {
 
 /* --- 格子通用設定 --- */
 .grid-item {
+  /* ★ 啟用容器查詢：讓內部的文字可以根據格子的寬度自動縮放 */
+  container-type: inline-size;
   background: var(--card-bg);
   display: flex;
   flex-direction: column;
@@ -70,21 +72,17 @@ body {
 }
 
 /* --- 標題卡 (左上角 2 格) --- */
-/* --- 標題卡 (左上角 2 格) --- */
 .title-card {
   grid-column: span 2;
+  /* ★ 這裡也要啟用，它是兩倍寬的容器 */
+  container-type: inline-size;
+
   background: linear-gradient(135deg, #0f1129 0%, #0a0b1e 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  /* ★ 關鍵修改 1：移除 padding，讓藍框撐滿整個格子，高度就會跟旁邊一樣了 */
-  padding: 0;
-  
-  /* ★ 關鍵修改 2：移除繼承自 grid-item 的邊框，避免雙重邊框 */
+  padding: 0; 
   border: none; 
-  
-  /* 確保標題卡不會被滑鼠干擾 */
   pointer-events: none; 
   user-select: none;
 }
@@ -124,28 +122,29 @@ body {
   text-shadow: 0 0 5px var(--neon-blue);
 }
 
-/* ★ 修改重點 2：調整標題字體大小與行高 */
 .title-card .main-title {
-  /* 從 3.5rem 改為 2.8rem，確保五個字能塞進去 */
-  font-size: 2.8rem; 
+  /* ★ 修改這裡：使用 cqw 單位，隨著格子寬度變大 */
+  font-size: 11cqw; 
+  
   font-weight: 900;
   margin: 0;
   text-align: center;
   color: white;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   font-family: 'Noto Serif TC', serif;
-  
-  /* 確保文字不換行 */
   white-space: nowrap;
   line-height: 1.2;
-  padding: 0 10px; /* 防止左右貼太死 */
+  padding: 0 10px;
 }
 
+/* 修改 .title-card .sub-title */
 .title-card .sub-title {
-  font-size: 1rem;
+  /* ★ 修改這裡：副標題也自動縮放 */
+  font-size: 4cqw;
+  
   color: var(--neon-purple);
-  margin-top: 5px;
-  letter-spacing: 3px; /* 字距稍微縮小一點 */
+  margin-top: 1cqw; /* 間距也用比例 */
+  letter-spacing: 0.5cqw;
   font-weight: 400;
   text-transform: uppercase;
 }
@@ -190,6 +189,7 @@ body {
   margin-top: 5px;
 }
 
+/* 修改 .name-box */
 .name-box {
   position: absolute;
   bottom: 0;
@@ -197,20 +197,26 @@ body {
   width: 100%;
   background: rgba(10, 11, 30, 0.9);
   border-top: 1px solid var(--neon-blue);
-  padding: 8px 0;
+  
+  /* ★ 修改這裡：padding 和字體都改用 cqw */
+  padding: 2cqw 0; 
+  font-size: 8cqw; /* 名字變超大 */
+  
   text-align: center;
   font-weight: 700;
-  font-size: 1rem;
   color: white;
   text-shadow: 0 0 5px black;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 2cqw; /* 間距也自動調整 */
 }
 
+/* 修改 .artist-label (那個 Artist: 的小字) */
 .artist-label {
-  font-size: 0.7rem;
+  /* ★ 修改這裡 */
+  font-size: 3cqw;
+  
   color: var(--neon-blue);
   text-transform: uppercase;
   font-family: 'Orbitron', sans-serif;
